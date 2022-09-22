@@ -1,0 +1,371 @@
+beq --> ==
+bne --> !=
+bgez -> >=0
+bgtz -> >0
+blez -> <=0
+bltz -> <0
+Entre dos registros:
+bge -> >=
+ble -> <=
+blt -> <
+bgt -> >
+
+Todos estos después hacen un branch a la etiqueta que vos quieras.
+
+Los que no hacen este branch son los slt, simplemente devuelven 0 o 1.
+sge, sne, seq, etc...
+
+Q1.1)
+En la posición de memoria de res se carga un 1 porque es verdadera la afirmación de que 30<40.
+
+Q1.2)
+En este caso en res se guarda un 0 pues 50 no es mayor a 40.
+
+Q1.3)
+En el 1.1 se pregunta si 30<40 y en el 1.2 si 50<10.
+
+Q1.4)
+Seria hacer lo mismo pero cambiando la linea 
+	slt $t2, $t0, $t1 
+Por la línea
+	seq $t2, $t0, $t1
+Esta función pregunta si son iguales. Dará negativo pues 30 no es igual a 40.
+
+Q1.5)
+En este caso se evaluaría si es mayor o igual:
+	sge $t2, $t0, $t1 # Sge viene de Greater or equal
+Deberiamos fijarnos en este caso si es mayor e igual y luego si es menor e igual, luego hacer un and entre estos dos registros quedando:
+	#RESTO DEL CODIGO
+	sge $t2, $t0, $t1
+	sle $t3, $t0, $t1
+	and $t2, $t2, $t3
+	sb $t2, res($0)
+
+Q1.6)
+En res se guarda el valor 1 efectivamente pues 30 != 40 y además 30<40.
+De igual manera, la única forma de que de 0 es que sea mayor el primero al segundo, primero se fija si es menor, en ese caso da 1. En el caso de que sean iguales tambien da 1. Solo siendo mayor no es 1.
+
+Q1.7)
+En este caso da 0. Como dije, solo pasa esto si el primero es el mayor número. 50>20.
+
+Q1.8)
+En este caso si da 1, pues como dije funciona como un <=, y 20=20.
+
+Q1.9)
+Se evalúa si dato1<=dato2.
+
+Q1.10)
+Con la instrucción sle:
+	sle $t2, $t0, $t1
+	sb $t2, res($0)
+
+Q1.11)
+En este caso solo hay que cambiar la instrucción:
+slt $t2, $t0, $t1
+Por la instrucción:
+sgt $t2, $t0, $t1
+
+Q1.12)
+En este caso deberíamos usar sge:
+sge $t2, $t0, $t1
+
+Q1.13)
+Se carga el valor 1 en la posición de memoria de res.
+El programa evalúa si los dos datos son distintos de 0, en este caso da 1. Sino da 0, en el caso que al menos uno sea 0.
+
+Q1.14)
+Da 0.
+
+Q1.15)
+Da 0.
+
+Q1.16)
+Da 0.
+
+Q1.17)
+En este programa se evallúa si alguno de los datos es 0, basicamente es un and.
+
+Q1.18)
+.data
+dato1: .word 40
+dato2: .word -50
+res .space 1
+.text
+main: lw $t8,dato1($0)
+lw $t9,dato2($0)
+and $t0,$t0,$0
+and $t1,$t1,$0
+beq $t8,$0,igual
+ori $t0,$0,1
+igual: beq $t9,$t8,fineval
+ori $t1,$0,1
+fineval: and $t0,$t0,$t1
+sb $t0,res($0)
+
+
+Q1.19)
+Se carga el valor 1. Se fija si dato2<dato1 y si dato1 es distinto de 0.
+
+Q1.20)
+En este caso 20 no es menor a 10, por lo que da 0.
+
+Q1.21)
+En este caso da 0 porque dato1 = 0.
+
+Q1.22)
+dato2<dato1 && dato1!=0
+
+Q1.23)
+.data
+dato1: .word 30
+dato2: .word -50
+res: .space 1
+.text
+main: lw $t8,dato1($0)
+lw $t9,dato2($0)
+and $t1,$t1,$0
+and $t0,$t0,$0
+beq $t8,$t9,finaleval
+ori $t0,$0,1
+igual: sle $t1,$t8,$t9
+fineval: and $t0,$t0,$t1
+sb $t0,res($0)
+
+Q1.24)
+Lo mismo que el punto anterior.
+
+Q1.25)
+Lo que hace es que t0 = 1 si t8<t9 O t9=0
+En este caso res vale 0.
+
+Q1.26)
+En este caso res es 1 pues -20<10.
+
+Q1.27)
+En este caso res es 1 pues 0=0.
+
+Q1.28)
+En este caso es 0 pues 20 es mayor a 10 y ninguno es 0.
+
+Q1.29)
+t8<t9 || t9==0
+
+Q1.30)
+.data
+dato1: .word 30
+dato2: .word -20
+res .space 1
+.text
+main: lw $t8,dato1($0)
+lw $t9,dato2($0)
+and $t0,$t0,$0
+and $t1,$t1,$0
+sle $t0,$t8,$t9
+ble $t8,$0,fineval
+ori $t1,$0,1
+fineval: or $t0,$t0,$t1
+sb $t0,res($0)
+
+Q1.31)
+Igual que el anterior.
+
+Q2.1)
+beq (branch if equal). Salta hacia cierta etiqueta si algo da verdadero, en alto nivel es el IF.
+
+Q2.2)
+Es la misma instrucción beq en conjunto con ciertas etiquetas, que apuntan al then.
+
+Q2.3)
+71: (40 + 30 + (40/30))
+
+Q2.4)
+dato2=0 por lo que el valor almacenado en res simplemente es 40, 40 + 0 + 0
+
+Q2.5)
+            .data
+dato1:      .word 40
+dato2:      .word 30
+res:        .space 4
+            .text
+main:       lw $t0, dato1($0)
+            lw $t1, dato2($0)
+            and $t2, $t2, $0
+Si:         ble $t1, $0, finsi
+entonces:   div $t0, $t1
+            mflo $t2
+finsi:      add $t3, $t0, $t1
+            add $t2, $t3, $t2
+            sw $t2, res($0)
+
+Q2.6)
+var
+    integ: dato1=40; dato2=30; res;
+start
+    Si (dato2 != 0)
+        Si (dato1 != 0)
+            res = dato1 / dato2;
+    res = res + dato1 + dato2;
+end
+
+Q2.7)
+las dos instruciones beq. En el pseudocódigo se utiliza el operador or y el
+operador de igualdad (==).
+
+Q2.8)
+La instrucción que se implementa para la estructura condicional if-then es beq, la
+cual funciona comparando dos valores y determinando si uno de ellos es menor
+que el otro (esto depende del orden en el que se ingresen).
+
+Q2.9)
+71
+
+Q2.10)
+Si dato1 es 0 en res se guarda 30 y si dato2 es 0 en res se guarda 40.
+
+Q2.11)
+dato1: .word 40
+dato2: .word 30
+res: .space 4
+.text
+main: lw $t0,dato1($0) #cargar dato1 en $t0
+lw $t1,dato2($0) #cargar dato2 en $t1
+and $t2,$t2,$0 #t2=0
+blt $t1,$0, salto #si $t1 > 0
+ble $t0,$0 salto #si %$t0 <= 0
+div $t0,$t1
+mflo $t2 
+salto: add $t3,$t0,$t1 #$t3=$t0+$t1
+add $t2,$t3,$t2 #$t2=$t3+$t2
+sw $t2,res($0) #almacenar en res $t2
+
+Q2.12)
+var
+integ: dato1 = 40, dato2 = 30, res;
+start
+Si (dato1 >= dato2) res = dato2;
+Sino res = dato1;
+end
+
+Q2.13)
+Se guardará 30, si dato1 fuera 35 en res se guardaría 35 también, pues dato1<dato2
+
+Q2.14)
+Primero se llama a la instrucción slt, que compara el valor de dos registros
+temporales ($8 y $9) de esta forma: $8 < $9, el resultado de esta comparación se
+almacena en el registro $1. Luego se utiliza la instrucción beq, la cual compara el
+registro $1 y $0 de forma $1 == $0, en caso de ser verdadero salta hacia la etiqueta
+4.
+
+Q2.15)
+.data
+dato1: .word 30
+dato2: .word 40
+res: .space 4
+.text
+main: lw $t0,dato1($0) #cargar dato1 en $t0
+lw $t1,dato2($0) #cargar dato2 en $t1
+and $t2,$t2,$0
+blt $t0,$t1, sino #si $t0 < $t1 ir a sino
+sub $t2, $t0, $t1
+j saltar #ir a finsi
+sino: sub $t2, $t1, $t0
+saltar: sw $t2,res($0) #almacenar $t2 en res
+
+Q2.16)
+var
+integ: dato1 = 40, dato2 = 30, dato3 = -1, res;
+strat
+Si (dato3 < dato1) res = 1;
+Sino
+Si (dato3 <= dato2) res = 0;
+end
+
+Q2.17)
+Se guardará 1 en res. ya que dato3<dato1. Si dato1=40 y dato2=30, res seguiría con 1 porque dato3 es menor que los dos.
+
+Q2.18)
+dato2: .word 40
+dato3: .word -1
+res: .space 4
+.text
+main: lw $t1,dato1($0) #cargar dato1 en $t1
+lw $t2,dato2($0) #cargar dato2 en $t2
+lw $t3,dato3($0) #cargar dato3 en $t3
+bge $t3,$t1, then1 #si $t3 < $t1 ir a then1
+j finsi
+then1: ble $t3,$t2, then2 #si $t3 <= $t2 ir a then2
+j finsi
+then2: addi $t4, $0, 1 #carga el valor 1 en $t4
+finsi: sw $t4,res($0)
+
+Q2.19)
+Lo primero que sucede es la carga de la cadena en un registro temporal, además
+de la limpieza de $t2 para su uso como contador. Luego inicia el bucle mediante el
+uso de la etiqueta mientras, la cual almacena un byte de la cadena en $t1, para
+después comparar el valor de $t1 y $t0, si son diferentes vuelve a la etiqueta
+mientras, pero si no lo son, aumenta en 1 a $t2 y $t0, permitiendo el recorrido por
+la cadena. Cuando $t1 y $t0 sean iguales, salta a la etiqueta finmientras, la cual
+almacena el contenido de $t2 en el espacio de memoria n
+
+Q2.20)
+En n se guarda el 4 ya que el contador aumentó hasta ahí al igualar la cantidad
+de caracteres de ña cadena.
+
+Q2.21)
+.data
+tira1: .asciiz "hola"
+tira2: .asciiz "adios"
+.align 2
+n: .space 4
+.text
+main: la $t0, tira1
+la $t1, tira2
+andi $t2,$t2, 0
+while: lb $t3,0($t0)
+lb $t4,0($t1)
+beq $t3, $0, fin
+beq $t4, $0, fin
+addi $t2,$t2,1
+addi $t3,$t3,1
+addi $t4,$t4,1
+j while
+fin: sw $t2,n($0)
+
+Q2.22)
+Primero se carga un vector de 6 elementos enteros en $t2,
+$t3 se limpia, se inicia $t0 y $t1, este último guardando la longitud del vector.
+Luego se inicia la primera etiqueta, para, dentro de la cual se desarrollará el bucle.
+La primera instrucción dentro de para es bgt, que en el caso de que $t0 sea mayor
+a $t1, terminará el bucle. La siguiente instrucción es lw, la cual guarda la dirección
+del vector en $t4, para luego con la instrucción add, guardar la suma de $t4 y $t3
+en $t3, además de aumentar $t2 en 4, permitiendo el recorrido por el vector. Por
+último se aumenta el contador de $t0 en 1 y se repite el bucle. Con el bucle
+terminado mediante el salto a la etiqueta finpara, se almacena en res el resultado
+de la suma de todos los elementos del vector.
+
+Q2.23)
+41
+
+Q2.24)
+.data
+v1: .word 6,7,8,9,10,-1,34,23
+v2: .space 32
+.text
+main: la $t0,v1
+la $t1,v2
+li $t2,0
+li $t3,8
+para: bgt $t2,$t3,finpara #si $t2>$t3 saltar finpara
+lw $t4,0($t2) #carga elemento vector en $t4
+addi $t4, $t4, 1
+sw $t4, 0($t1)
+addi $t0,$t0,4 #$t0=$t0+4
+addi $t1,$t1,1 #$t1=$t1+1
+addi $t2,$t2,1 #$t2=$t2+1
+finpara:
+
+
+
+
+
+

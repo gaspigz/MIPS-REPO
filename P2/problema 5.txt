@@ -1,0 +1,20 @@
+            .data
+vector:     .word 21, 0, 12, 5, 32, 41, 66
+n:          .word 7
+total:      .word 1
+
+            .text
+main:       la $t0, vector
+            and $t1, $t1, $0        
+            lw $t2, n($0)           
+            and $t3, $t3, $0        
+        
+for:        bge $t1, $t2, endfor    
+            lw $t4, 0($t0)          
+            seq $t4, $t4, $0        
+            add $t3, $t3, $t4       
+            addi $t0, $t0, 4
+            addi $t1, $t1, 1        
+            j for
+
+endfor:     sw $t3, total($0)
